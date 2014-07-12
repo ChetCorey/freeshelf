@@ -1,0 +1,7 @@
+.small-9.columns
+  text-align: center
+    h3.logo
+      = "#{current_user.name}'s Favorite books"
+.row
+  .large-12.columns
+    = render 'books/books', :books => current_user.favorite_books
