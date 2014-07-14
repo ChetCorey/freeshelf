@@ -33,7 +33,7 @@ class BooksController < ApplicationController
   end
 
   def create
-    @book = current_user.books.build(book_params)
+    @book = Book.new(book_params)
 
     if @book.save
       add_user_as_tagger
@@ -65,6 +65,7 @@ class BooksController < ApplicationController
       @tag = ActsAsTaggableOn::Tag.find_by_name(params[:tag])
       @books = @books.includes(:tags).tagged_with(@tag).page params[:page]
     end
+    @books = current_user.favorite_books.send(params[:scope]).page params[:page]
     if params[:order] == 'asc'
       @books = @books.reverse_order
     end

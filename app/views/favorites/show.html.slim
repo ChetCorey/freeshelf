@@ -7,5 +7,9 @@
       - else
         = "#{current_user.name}'s Favorite books"
 .row
-  .large-12.columns
+  .large-12.columns.book_content
     = render 'books/books', :books => current_user.favorite_books
+
+=content_for(:sort_function)
+  #sort_button
+    = render 'layouts/sort_list'
