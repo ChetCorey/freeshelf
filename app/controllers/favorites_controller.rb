@@ -23,6 +23,10 @@ class FavoritesController < ApplicationController
   end
 
   def show
+    if current_user.favorite_books.count == 0
+      redirect_to root_path, alert: "Sorry but you have no books in your Favorites list.
+      Click the stars to add books."
+    end
   end
 
   private
