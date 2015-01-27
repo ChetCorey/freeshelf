@@ -96,6 +96,7 @@ ActiveRecord::Schema.define(version: 20140714140903) do
     t.string   "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "email_update"
   end
 
   create_table "videos", force: true do |t|
@@ -108,8 +109,10 @@ ActiveRecord::Schema.define(version: 20140714140903) do
     t.string   "slug"
     t.integer  "year_created"
     t.integer  "favorites_count"
+    t.integer  "user_id"
   end
 
+  add_index "videos", ["user_id"], name: "index_videos_on_user_id", using: :btree
   add_index "videos", ["year_created"], name: "index_videos_on_year_created", using: :btree
 
 end

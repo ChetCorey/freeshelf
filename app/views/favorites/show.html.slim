@@ -1,11 +1,38 @@
+
 .small-12.columns
-  text-align: center
+  text-align: left
     h3
+<<<<<<< HEAD
       = "#{current_user.name}'s Favorite books"
+=======
+      - if current_user.favorite_books.count == 0
+        p You have no favorite books.
+        p Click the star on a books page to add books.
+      - else
+        = "#{current_user.name}'s Favorite books"
+>>>>>>> upstream/master
 .row
   .large-12.columns.book_content
     = render 'books/books', :books => current_user.favorite_books
 
+<<<<<<< HEAD
 =content_for(:sort_function)
   #sort_button
     = render 'layouts/sort_list'
+=======
+.small-12.columns
+  text-align: right
+    h3
+      - if current_user.favorite_tags.count == 0
+        p You have no favorite tags.
+        p Click the star on a tag search to add tags.
+      - else
+        = "#{current_user.name}'s Favorite tags"
+.row
+  .large-12.columns
+    .tags
+      - current_user.favorite_tags.each do |tag|
+        span.secondary.radius.label>
+          h6
+            = link_to tag, tag_books_path(tag.name)
+>>>>>>> upstream/master

@@ -1,16 +1,14 @@
 class BooksController < ApplicationController
   before_action :authorize, only: [:new, :create, :edit, :edit_tags, :update, :update_tags]
   before_action :find_book, only: [:show, :edit, :edit_tags, :update, :update_tags]
+  before_action :find_books, only: [:index]
   before_action :correct_user, only: :edit
 
   def index
-    @books = Book.includes(:tags).page params[:page]
-  end
-
-  def tags
-    @tag_name = params[:tag]
-    @tag = ActsAsTaggableOn::Tag.where(:name => @tag_name).first_or_create
-    @books = Book.includes(:tags).tagged_with(@tag).page params[:page]
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def edit_tags
@@ -18,6 +16,7 @@ class BooksController < ApplicationController
 
   def update_tags
     add_user_as_tagger
+    @book = Book.friendly.find(params[:id])
     respond_to do |format|
       format.html { redirect_to @book, notice: "Your tag list was updated." }
       format.js
@@ -37,6 +36,7 @@ class BooksController < ApplicationController
 
     if @book.save
       add_user_as_tagger
+      email_update(@book)
       respond_to do |format|
         format.html { redirect_to @book, notice: "Your book was added." }
         format.js
@@ -58,6 +58,7 @@ class BooksController < ApplicationController
     end
   end
 
+<<<<<<< HEAD
   def sort
     @books = Book.send(params[:scope]).page params[:page]
     @sort_name = params[:scope].titleize
@@ -73,12 +74,37 @@ class BooksController < ApplicationController
       format.js
       format.html
     end
+=======
+  def email_update(book)
+    tags = book.tags
+    slug = book.slug
+    recipients = User.where(email_update:true).all
+    recipients.each do |user|
+      favs = user.favorite_tags
+      tags.each do |tag|
+        favs.each do |fav|
+          if fav.id == tag.id
+            TagMailer.new_tag_alert(user, slug, tag).deliver
+            end
+          end
+        end
+      end
+>>>>>>> upstream/master
   end
 
   private
 
   def find_book
     @book = Book.friendly.includes(:tags).find(params[:id])
+  end
+
+  def find_books
+    @books = Book.sort_by(params).includes(:tags)
+    if params[:tag].present?
+      @tag = ActsAsTaggableOn::Tag.where(name: params[:tag]).first_or_create
+      @books = @books.tagged_with(@tag)
+    end
+    @books = @books.page params[:page]
   end
 
   def correct_user
